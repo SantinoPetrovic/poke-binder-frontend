@@ -10,7 +10,7 @@ module.exports = {
     clean: true,
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', '.css'],
   },
   module: {
     rules: [
@@ -19,6 +19,11 @@ module.exports = {
         use: 'ts-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.css$/i,
+        include: /src/,
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
+      }
     ],
   },
   devServer: {
@@ -32,7 +37,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'public/index.html',
     }),
-    Dotenv(),
+    new Dotenv(),
   ],
   mode: 'development',
 };
