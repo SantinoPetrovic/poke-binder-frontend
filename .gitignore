@@ -30,6 +30,6 @@ Thumbs.db
 # TypeScript cache
 *.tsbuildinfo
 
-# Dotenv
+# Dote  nv
 .env
 .env.*
