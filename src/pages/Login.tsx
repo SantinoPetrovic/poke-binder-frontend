@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/AuthService';
 import { UserIcon, LockIcon } from 'lucide-react';
@@ -29,6 +29,12 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    if (authService.isAuthenticated()) {
+      navigate('/');
+    }
+  }, [navigate]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <div className="w-full max-w-xs bg-white dark:bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -48,7 +54,10 @@ const Login = () => {
                 required
                 className="shadow appearance-none border rounded w-full py-2 pl-10 pr-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 dark:border-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Username"
-                onChange={e => setCredentials({ ...credentials, username: e.target.value })}
+                onChange={e => {
+                  setError('');
+                  setCredentials({ ...credentials, username: e.target.value });
+                }}
               />
             </div>
           </div>
@@ -67,7 +76,10 @@ const Login = () => {
                 required
                 className={`shadow appearance-none border ${error ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded w-full py-2 pl-10 pr-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
                 placeholder="Password"
-                onChange={e => setCredentials({ ...credentials, password: e.target.value })}
+                onChange={e => {
+                  setError('');
+                  setCredentials({ ...credentials, password: e.target.value });
+                }}
               />
               {error && (
                 <p className="text-red-500 dark:text-red-400 text-xs italic mt-1">{error}</p>
@@ -81,13 +93,8 @@ const Login = () => {
               disabled={isLoading}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50 transition-colors duration-200"
             >
-              {isLoading ? 'Loggin in...' : 'Log in'}
+              {isLoading ? 'Logging in...' : 'Log in'}
             </button>
-            <a
-              href=""
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-            >
-            </a>
           </div>
         </form>
       </div>
