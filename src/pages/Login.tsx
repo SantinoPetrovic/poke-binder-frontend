@@ -19,8 +19,9 @@ const Login = () => {
 
     try {
       const response = await authService.login(credentials);
-      authService.setToken(response.token);
-      navigate('/');
+      if (response) {
+        navigate('/');
+      }
     } catch (err) {
       setError('Login failed. Check your credentials.');
     } finally {
@@ -31,7 +32,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <div className="w-full max-w-xs bg-white dark:bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h2 className="text-center text-2xl font-bold text-gray-900 dark:text-white">Logga in</h2>
+        <h2 className="text-center text-2xl font-bold text-gray-900 dark:text-white">Login</h2>
         <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="username">

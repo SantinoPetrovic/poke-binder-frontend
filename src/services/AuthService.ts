@@ -9,11 +9,18 @@ interface AuthResponse {
     id: number;
     username: string;
   };
+  expiration: string;
 }
 
 const LOGIN_URL = `${process.env.REACT_APP_API_URL}/users/login`;
 
 export const authService = {
+
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    return !!token;
+  },
+
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
 
     const response = await fetch(LOGIN_URL, {
@@ -27,30 +34,48 @@ export const authService = {
     if (!response.ok) {
       throw new Error('Login failed');
     }
-    return response.json();
+
+    const data: AuthResponse = await response.json();
+
+    this.storeAuthData(data.token, data.expiration, data.user);
+
+    return data;
   },
 
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('expired');
+    localStorage.removeItem('user');
   },
 
   getToken(): string | null {
     let token = localStorage.getItem('token');
     if ((token?.length ?? 0) > 0) {
       const raw = localStorage.getItem("expired");
-      let expired: Date | null = raw ? new Date(raw) : null;
+      const expired = raw ? new Date(raw) : null;
       let currentDate = new Date();
       if (expired && expired < currentDate) {
         this.logout();
+        return null;
       }
     }
     return token;
   },
 
-  setToken(token: string): void {
-    let dateModify = new Date();
-    dateModify.setHours(dateModify.getHours() + 3);
+  storeAuthData(token: string, expiration: string, user: { id: number; username: string }): void {
     localStorage.setItem('token', token);
-    localStorage.setItem('expired', dateModify.toISOString());
+    localStorage.setItem('expired', expiration);
+    localStorage.setItem('user', JSON.stringify(user));
   },
+
+  getUser(): { id: number; username: string } | null {
+    const raw = localStorage.getItem('user');
+    if (!raw) return null;
+
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
 };
