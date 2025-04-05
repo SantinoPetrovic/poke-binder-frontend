@@ -8,7 +8,7 @@ const Navbar: React.FC = () => {
   const { isDark, toggleTheme } = useTheme();
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-lg transition-colors duration-200">
+    <nav className="fixed w-full bg-white dark:bg-gray-800 shadow-lg transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex space-x-4 items-center">
