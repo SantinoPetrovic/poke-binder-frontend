@@ -14,14 +14,16 @@ const Navbar: React.FC = () => {
           <div className="flex space-x-4 items-center">
             <button 
               onClick={() => navigate('/')}
-              className="text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+              className="cursor-pointer text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
             >
+              <span className="text-lg font-semibold">Pokémon Virtual Binder</span>
             </button>
           </div>
           
           <div className="flex items-center space-x-4">
             <button
               onClick={toggleTheme}
+              aria-label="Toggle dark mode"
               className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
             >
               {isDark ? (
