@@ -12,7 +12,7 @@ interface AuthResponse {
   expiration: string;
 }
 
-const LOGIN_URL = `${process.env.REACT_APP_API_URL}/users/login`;
+const LOGIN_URL = `${process.env.API_URL}/users/login`;
 
 export const authService = {
 
