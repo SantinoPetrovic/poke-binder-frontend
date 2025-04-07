@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import HTMLFlipBook from 'react-pageflip';
 import { useParams } from 'react-router-dom';
+import FlipBinder from '../components/FlipBinder';
 import { UserProductCategoryService } from '../services/UserProductCategoryService';
 import { BinderWithCards, CardWithCondition } from '../types/UserProductCategory';
 
@@ -31,7 +33,7 @@ const Binder = () => {
       );
     };
 
-    if (loading) {
+    if (loading || !binder) {
       return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
           <p className="text-gray-700 dark:text-gray-300 text-lg">Loading your binder...</p>
@@ -41,21 +43,10 @@ const Binder = () => {
     
     return (
       <div className="p-6 max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4 text-gray-800 dark:text-white">{binder?.name ?? ''}</h1>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-          {binder && binder.cards.map((card: CardWithCondition) => (
-            <div
-              key={card.id}
-              className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden p-4 text-center"
-            >
-              <img src={card.imagesSmallUrl} alt={card.name} className="w-full h-40 object-contain mb-2" />
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{card.name}</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Condition: {card.conditionData.name}
-              </p>
-            </div>
-          ))}
-        </div>
+        <h1 className="text-3xl font-bold mb-4 text-gray-800 dark:text-white text-center">
+          {binder?.name ?? 'My Binder'}
+        </h1>
+        <FlipBinder cards={binder.cards} binderName={binder.name} />
       </div>
     );
 };
