@@ -1,8 +1,6 @@
 import React, { useState, useRef } from 'react';
 import HTMLFlipBook from 'react-pageflip';
-import { useParams } from 'react-router-dom';
-import { UserProductCategoryService } from '../services/UserProductCategoryService';
-import { BinderWithCards, CardWithCondition } from '../types/UserProductCategory';
+import { CardWithCondition } from '../types/UserProductCategory';
 
 interface FlipBinderProps {
   cards: CardWithCondition[];
@@ -12,6 +10,16 @@ interface FlipBinderProps {
 const FlipBinder: React.FC<FlipBinderProps> = ({ cards, binderName }) => {
     const binderRef = useRef<{ pageFlip: () => any } | null>(null);
     const [currentPage, setCurrentPage] = useState(0);
+
+    const chunkCards = (cards: CardWithCondition[], chunkSize: number): CardWithCondition[][] => {
+      const result = [];
+      for (let i = 0; i < cards.length; i += chunkSize) {
+        result.push(cards.slice(i, i + chunkSize));
+      }
+      return result;
+    }
+
+    const pages = chunkCards(cards, 4);
 
     const flipNext = () => binderRef.current?.pageFlip().flipNext();
     const flipPrev = () => binderRef.current?.pageFlip().flipPrev();
@@ -35,7 +43,7 @@ const FlipBinder: React.FC<FlipBinderProps> = ({ cards, binderName }) => {
           className="mx-auto"
           style={{}}
           startPage={0}
-          flippingTime={1000}
+          flippingTime={600}
           usePortrait={true}
           startZIndex={0}
           autoSize={true}
@@ -48,13 +56,19 @@ const FlipBinder: React.FC<FlipBinderProps> = ({ cards, binderName }) => {
           maxShadowOpacity={0.5}
           mobileScrollSupport={true}
         >
-          {cards.map((card: CardWithCondition) => (
-            <div key={card.id} className="bg-white dark:bg-gray-800 shadow-xl p-6 flex flex-col items-center justify-center">
-              <img src={card.imagesSmallUrl} alt={card.name} className="h-60 object-contain mb-4" />
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{card.name}</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                {card.conditionData.name}
-              </p>
+          {pages.map((pageCards: CardWithCondition[], index: number) => (
+            <div key={index}>
+              <div className="grid grid-cols-2 gap-4 bg-white dark:bg-gray-800 shadow-xl p-4 min-h-full">
+              {pageCards.map((card: CardWithCondition) => (
+                <div key={card.id} className="flex flex-col items-center">
+                  <img src={card?.imagesSmallUrl ?? ''} alt={card.name} className="h-60 object-contain mb-4" />
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{card?.name ?? 'Undefined Card Name'}</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    {card?.conditionData?.name ?? 'Undefined Condition'}
+                  </p>
+                </div>
+              ))}
+              </div>
             </div>
           ))}
         </HTMLFlipBook>
@@ -66,7 +80,7 @@ const FlipBinder: React.FC<FlipBinderProps> = ({ cards, binderName }) => {
             Flip back
           </button>
           <div className="text-sm mt-2 text-gray-500">
-            Page {currentPage + 1} of {binderRef.current?.pageFlip().getPageCount()}
+            Page {currentPage + 1} of {binderRef.current?.pageFlip()?.getPageCount() ?? 'Unknown page number'}
           </div>
           <button
             onClick={() => flipNext()}

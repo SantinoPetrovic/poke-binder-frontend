@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import HTMLFlipBook from 'react-pageflip';
 import { useParams } from 'react-router-dom';
 import FlipBinder from '../components/FlipBinder';
 import { UserProductCategoryService } from '../services/UserProductCategoryService';
@@ -42,10 +41,7 @@ const Binder = () => {
     }
     
     return (
-      <div className="p-6 max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4 text-gray-800 dark:text-white text-center">
-          {binder?.name ?? 'My Binder'}
-        </h1>
+      <div className="p-10 max-w-5xl mx-auto">
         <FlipBinder cards={binder.cards} binderName={binder.name} />
       </div>
     );
